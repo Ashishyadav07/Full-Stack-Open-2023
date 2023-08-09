@@ -1,6 +1,6 @@
 const Total = (props) => {
   
-    const total = props.course.parts.reduce((acc, part) => acc + part.exercises, 0)
+    const total = props.courses.parts.reduce((acc, part) => acc + part.exercises, 0)
   
     return (
       <div>
