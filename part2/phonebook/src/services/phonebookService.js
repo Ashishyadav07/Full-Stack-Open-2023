@@ -14,10 +14,15 @@ const remove = id => {
   return axios.delete(`${baseUrl}/${id}`);
 };
 
+const update = (id, updatedPerson) => {
+  return axios.put(`${baseUrl}/${id}`, updatedPerson).then(response => response.data);
+};
+
 
 const phonebookService = {
   getAll,
   create,
+  update,
   remove,
 };
 
