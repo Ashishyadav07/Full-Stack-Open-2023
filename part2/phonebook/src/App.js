@@ -3,12 +3,14 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 import phonebookService from './services/phonebookService';
+import Notification from './components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     phonebookService.getAll().then(response => {
@@ -45,6 +47,11 @@ const App = () => {
           setPersons(persons.map(person => (person.id !== existingPerson.id ? person : returnedPerson)));
           setNewName('');
           setNewNumber('');
+
+      setNotificationMessage(`Number is changed`);
+      setTimeout(() => {
+        setNotificationMessage(null);
+      }, 5000);
         });
       }
     } else {
@@ -54,6 +61,11 @@ const App = () => {
         setPersons([...persons, response]);
         setNewName('');
         setNewNumber('');
+
+      setNotificationMessage(`Added ${response.name}`);
+      setTimeout(() => {
+        setNotificationMessage(null);
+      }, 5000);
       });
     }
   };
@@ -78,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
 
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
 
