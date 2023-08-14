@@ -11,6 +11,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [notificationMessage, setNotificationMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
 
   useEffect(() => {
     phonebookService.getAll().then(response => {
@@ -52,6 +54,13 @@ const App = () => {
       setTimeout(() => {
         setNotificationMessage(null);
       }, 5000);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          setErrorMessage(`Information of ${updatedPerson.name} has already been removed from the server`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         });
       }
     } else {
@@ -77,6 +86,13 @@ const App = () => {
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
       phonebookService.remove(id).then(() => {
         setPersons(persons.filter(person => person.id !== id));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setErrorMessage(`Information of ${personToDelete.name} has already been removed from the server`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
       });
     }
   };
@@ -91,7 +107,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMessage} />
-
+      <Notification message={errorMessage} isError={true} />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
 
       <h3>Add a new</h3>

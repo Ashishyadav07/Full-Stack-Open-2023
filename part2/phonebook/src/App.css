@@ -7,3 +7,7 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+  .notification.error {
+    background: lightblue;
+    color: #ff0000; 
+  }
