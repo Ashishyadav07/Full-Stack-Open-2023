@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CountryDetails from "./components/CountryDetails";
 
 const App = () => {
 	const [search, setSearch] = useState("");
 	const [data, setData] = useState([]);
+	const [selectedCountry, setSelectedCountry] = useState(null);
 
 	const generateResults = () => {
 		if (data.length > 10 && search === "") {
@@ -11,34 +13,26 @@ const App = () => {
 		} else if (data.length > 10) {
 			return <p>Too many matches, specify another filter.</p>;
 		} else if (data.length === 1) {
-			return (
-				<div key={data[0].ccn3}>
-					<h2>{data[0].name.common}</h2>
-					<div>Capital City: {data[0].capital}</div>
-					<div>Area: {data[0].area}</div>
-					<div>
-						<h3>Languages:</h3>
-						<ul>
-							{Object.entries(data[0].languages).map((arr) => {
-								return <li key={arr[0]}>{arr[1]}</li>;
-							})}
-						</ul>
-					</div>
-					<img src={data[0].flags.png} alt="flag" />
-				</div>
-			);
+			return CountryDetails(data[0]);
 		} else if (data.length === 0) {
 			return <p>No matches, specify another filter.</p>;
 		} else if (data.length <= 10) {
 			return (
 				<div>
-					{data.map((country) => {
-						return <div key={country.ccn3}>{country.name.common}</div>;
-					})}
+					{data.map((country) => (
+						<div key={country.ccn3}>
+							{country.name.common}
+							<button onClick={() => setSelectedCountry(country)}>
+								Show
+							</button>
+						</div>
+					))}
 				</div>
 			);
 		}
 	};
+
+	
 
 	useEffect(() => {
 		axios.get("https://restcountries.com/v3.1/all").then((response) => {
@@ -51,7 +45,6 @@ const App = () => {
 		});
 	}, [search]);
 
-
 	return (
 		<div className="App">
 			Find Countries:{" "}
@@ -60,7 +53,7 @@ const App = () => {
 				onChange={(e) => setSearch(e.target.value)}
 				value={search}
 			/>
-			{generateResults()}
+			{selectedCountry ? CountryDetails(selectedCountry) : generateResults()}
 		</div>
 	);
 };
